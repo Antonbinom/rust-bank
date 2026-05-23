@@ -16,6 +16,23 @@ impl Bank {
             accounts: Vec::new(),
         }
     }
+
+    fn add_account(&mut self, account: Account) {
+        self.accounts.push(account);
+    }
+
+    fn total_balance(&self) ->i32 {
+        self.accounts
+        .iter()
+        .map(|account| account.balance)
+        .sum()
+    }
+
+    fn summary(&self) -> Vec<String> {
+        self.accounts.iter()
+        .map(|account| account.summary())
+        .collect::<Vec<String>>()
+    }
 }
 
 impl Account {
@@ -26,20 +43,32 @@ impl Account {
             holder,
         }
     }
+
+    fn deposit(&mut self, amount: i32) -> i32 {
+        self.balance += amount;
+        self.balance
+    }
+
+    fn withdraw(&mut self, amount: i32) -> i32 {
+        self.balance -= amount;
+        self.balance
+    }
+
+    fn summary(&self) -> String {
+        format!("Account: {} with balance: {}", self.holder, self.balance)
+    }
 }
 
-fn print_account(account: Account) {
-    println!("{:#?}", account);
-}
-
-fn print_bank(bank: Bank) {
-    println!("{:#?}", bank);
-}
 
 fn main() {
-    let bank = Bank::new();
-    let account = Account::new(1, String::from("Anton"));
+    let mut bank = Bank::new();
 
-    print_bank(bank);
-    print_account(account);
+    let mut account = Account::new(1, String::from("Anton"));
+
+    account.deposit(100);
+    account.withdraw(50);
+
+    bank.add_account(account);
+    println!("{:#?}", bank.summary());
+    println!("Total balance: {}", bank.total_balance());
 }
